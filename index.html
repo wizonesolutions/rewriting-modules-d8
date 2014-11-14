@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Modernizing FillPDF</title>
+
+  <meta name="description" content="FillPDF has gone modern; this presentation explains how.">
+  <meta name="author" content="Kevin Kaland">
+
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="css/reveal.min.css">
+  <link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+
+  <!-- Our overrides -->
+  <link rel="stylesheet" href="lib/css/modern-fillpdf.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if (window.location.search.match(/print-pdf/gi)) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+
+  <!--[if lt IE 9]>
+  <script src="lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+  <div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+      <section data-background="images/future.jpg" data-state="mf-intro">
+        <h1>Modernizing<br><span style="font-size: 10%">the</span> FillPDF
+          <span style="font-size: 10%">Drupal module</span></h1>
+
+        <h3>(By Porting it to Drupal 8)</h3>
+
+        <p>
+          Created by <a href="http://www.wizonesolutions">Kevin Kaland</a><br>
+          <small><a href="https://filldpf-service.com">FillPDF Service</a>
+          </small>
+        </p>
+      </section>
+
+      <section>
+        <section>
+          <h2>What was my experience?</h2>
+
+          <p>(tl;dr: Not as bad as I expected.)</p>
+
+          <aside class="notes">
+
+          </aside>
+        </section>
+
+        <section>
+          <p>&lt;<em>insert learning curve image with people falling off that
+            @mortendk uses all the time here</em>&gt;</p>
+
+          <p class="fragment">HOWEVER!</p>
+        </section>
+
+        <section>
+          <h2>"However" what?</h2>
+          <ul>
+            <li class="fragment">D8 isn't actually that scary.</li>
+            <li class="fragment">It's the concepts you already know expressed in a different
+              way.
+            </li>
+            <li class="fragment">I spent most of my time re-organizing things into the new
+              structure, but I was able to re-use a lot of logic and sometimes
+              even code.
+            </li>
+            <li class="fragment">The very same @mortendk was forced to retire as the Angry
+              Themer. He's the Happy Themer now (<a href="https://2014.badcamp.net/session/happy-themer-now-available-drupal-8">session</a>).
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>D8 is more consistent</h2>
+          <ul>
+            <li class="fragment">Patterns are used pretty consistently in core</li>
+            <li class="fragment">Your IDE will happily help you understand</li>
+            <li class="fragment">You have to define more things, so it's easier to find where
+              things are defined
+            </li>
+            <li class="fragment">Some things still feel like magic, but it's magic the wider
+              Modern PHP community expects/understands I think
+            </li>
+          </ul>
+        </section>
+      </section>
+
+      <section>
+        <h2>Verdict:</h2>
+
+        <h3>Learn it!</h3>
+      </section>
+
+      <section>
+        <section>
+          <h2>Now let me save you some time</h2>
+
+          <h3>#learnfrommyfail</h3>
+        </section>
+
+        <section>
+          <ul>
+            <li>The <s>cake</s> documentation page called <strong>"Converting
+              modules from 7.x to 8.x"</strong> is a lie. Don't bother with it.
+            </li>
+            <li class="fragment">Start with Drupal Module Upgrader (DMU) instead! It will tell
+              you a lot of what you need to fix.
+              <a href="https://drupal.org/project/drupalmoduleupgrader">https://drupal.org/project/drupalmoduleupgrader</a>
+            </li>
+            <li class="fragment">There will be other things besides what it says. For that, look
+              at the change records:
+              <a href="https://www.drupal.org/list-changes/published?keywords_description=&to_branch=8.x&version=&created_op=%3E%3D&created%5Bvalue%5D=&created%5Bmin%5D=&created%5Bmax%5D=">https://drupal.org/list-changes
+                (filtered by changes introduced in 8.x)</a>. These tend to be
+              pretty well-written.
+            </li>
+            <li class="fragment">Start with simple things like permissions. Move on to your
+              settings forms if there are any, then move on to more and more
+              complex stuff.
+              <br>
+              <small>(Coder Upgrade is discontinued, by the way, but regular Coder
+                is still around.)
+              </small>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Biggest fails (stuff that confused me the most):</h3>
+          <ul>
+            <li class="fragment current-visible">Database bad, entities good
+            </li>
+            <li class="fragment current-visible">Many change records show stuff
+              like
+              <pre><code class="php" data-trim contenteditable>\Drupal::config('foo.bar')->get('baz')</code></pre>
+              , but you should use dependency injection except in procedural
+              code (which should be rare)
+              <ul>
+                <li>For example, in form controllers, you can use
+                  <pre><code class="php" data-trim contenteditable>$this->config->get('foo.bar')->get('baz')</code></pre>
+                </li>
+                <li>But read the Configuration API docs first :)</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>King Fail: Dependency Injection</h3>
+
+          <p>What is this <em>doing</em>?</p><pre><code class="php" data-trim contenteditable>
+          class HandlePdfController extends ControllerBase {
+
+          // ...
+          public function __construct(FillPdfLinkManipulatorInterface
+          $link_manipulator) {
+          $this->linkManipulator = $link_manipulator;
+          }
+
+          public static function create(ContainerInterface $container) {
+          return new static($container->get('fillpdf.link_manipulator'));
+          }
+          // ...
+
+          }</code></pre>
+
+        </section>
+        <section>
+          <h3>King Fail: Dependency Injection</h3>
+
+          <p>What is this <em>doing</em>?</p>
+          <img src="images/DependencyInjection.png">
+        </section>
+
+      </section>
+
+      <section>
+        <h2>Side effects of module porting</h2>
+        <img src="images/FirstCoreCommit.png">
+
+        <p>:)</p>
+      </section>
+
+      <section>
+        <h2>In summary</h2>
+        <ul>
+          <li class="fragment">Drupal 8 is not that scary</li>
+          <li class="fragment">Drupal is competitive again</li>
+          <li class="fragment">It's early enough that you can bug the smart people in #drupal-contribute with your questions :)</li>
+          <li class="fragment">Backdrop is...okay, but it won't be my choice</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Stay in touch</h2>
+      </section>
+
+    </div>
+
+  </div>
+
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.min.js"></script>
+
+  <script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+      // Parallax scrolling
+      // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+      // parallaxBackgroundSize: '2100px 900px',
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+        { src: 'lib/js/classList.js', condition: function () {
+          return !document.body.classList;
+        } },
+        { src: 'plugin/markdown/marked.js', condition: function () {
+          return !!document.querySelector('[data-markdown]');
+        } },
+        { src: 'plugin/markdown/markdown.js', condition: function () {
+          return !!document.querySelector('[data-markdown]');
+        } },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+          hljs.initHighlightingOnLoad();
+        } },
+        { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+          return !!document.body.classList;
+        } },
+        { src: 'plugin/notes/notes.js', async: true, condition: function () {
+          return !!document.body.classList;
+        } }
+      ]
+    });
+
+  </script>
+
+</body>
+</html>

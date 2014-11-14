@@ -1,0 +1,7 @@
+.mf-intro section, .mf-intro section h1, .mf-intro section h3, .mf-intro section p {
+  color: #eee;
+}
+
+.mf-intro section a:not(.image) {
+  color: yellow;
+}
