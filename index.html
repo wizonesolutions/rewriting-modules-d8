@@ -155,8 +155,7 @@
             </li>
             <li class="fragment current-visible">Many change records show stuff
               like
-              <pre><code class="php" data-trim contenteditable>\Drupal::config('foo.bar')->get('baz')</code></pre>
-              , but you should use dependency injection except in procedural
+              <pre><code class="php" data-trim contenteditable>\Drupal::config('foo.bar')->get('baz')</code></pre>, but you should use dependency injection except in procedural
               code (which should be rare)
               <ul>
                 <li>For example, in form controllers, you can use
@@ -172,20 +171,20 @@
           <h3>King Fail: Dependency Injection</h3>
 
           <p>What is this <em>doing</em>?</p><pre><code class="php" data-trim contenteditable>
-          class HandlePdfController extends ControllerBase {
+class HandlePdfController extends ControllerBase {
 
-          // ...
-          public function __construct(FillPdfLinkManipulatorInterface
-          $link_manipulator) {
-          $this->linkManipulator = $link_manipulator;
-          }
+  // ...
+  public function __construct(FillPdfLinkManipulatorInterface
+    $link_manipulator) {
+    $this->linkManipulator = $link_manipulator;
+  }
 
-          public static function create(ContainerInterface $container) {
-          return new static($container->get('fillpdf.link_manipulator'));
-          }
-          // ...
+  public static function create(ContainerInterface $container) {
+    return new static($container->get('fillpdf.link_manipulator'));
+  }
+  // ...
 
-          }</code></pre>
+}</code></pre>
 
         </section>
         <section>
