@@ -61,140 +61,135 @@
       </section>
 
       <section>
-        <section>
-          <h2>What was my experience?</h2>
+        <h2>What was my experience?</h2>
 
-          <p>(tl;dr: Not as bad as I expected.)</p>
+        <p>(tl;dr: Not as bad as I expected.)</p>
 
-          <aside class="notes">
+        <aside class="notes">
 
-          </aside>
-        </section>
-
-        <section>
-          <p>&lt;<em>insert learning curve image with people falling off that
-            @mortendk uses all the time here</em>&gt;</p>
-
-          <p class="fragment">HOWEVER!</p>
-        </section>
-
-        <section>
-          <h2>"However" what?</h2>
-          <ul>
-            <li class="fragment">D8 isn't actually that scary.</li>
-            <li class="fragment">It's the concepts you already know expressed in a different
-              way.
-            </li>
-            <li class="fragment">I spent most of my time re-organizing things into the new
-              structure, but I was able to re-use a lot of logic and sometimes
-              even code.
-            </li>
-            <li class="fragment">The very same @mortendk was forced to retire as the Angry
-              Themer. He's the Happy Themer now (<a href="https://2014.badcamp.net/session/happy-themer-now-available-drupal-8">session</a>).
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>D8 is more consistent</h2>
-          <ul>
-            <li class="fragment">Patterns are used pretty consistently in core</li>
-            <li class="fragment">Your IDE will happily help you understand</li>
-            <li class="fragment">You have to define more things, so it's easier to find where
-              things are defined
-            </li>
-            <li class="fragment">Some things still feel like magic, but it's magic the wider
-              Modern PHP community expects/understands I think
-            </li>
-          </ul>
-        </section>
+        </aside>
       </section>
 
       <section>
-        <h2>Verdict:</h2>
+        <p>&lt;<em>insert learning curve image with people falling off that
+          @mortendk uses all the time here</em>&gt;</p>
 
-        <h3>Learn it!</h3>
+        <p class="fragment">HOWEVER!</p>
       </section>
 
       <section>
-        <section>
-          <h2>Now let me save you some time</h2>
+        <h2>"However" what?</h2>
+        <ul>
+          <li class="fragment">D8 isn't actually that scary.</li>
+          <li class="fragment">It's the concepts you already know expressed in a different
+            way.
+          </li>
+          <li class="fragment">I spent most of my time re-organizing things into the new
+            structure, but I was able to re-use a lot of logic and sometimes
+            even code.
+          </li>
+          <li class="fragment">The very same @mortendk was forced to retire as the Angry
+            Themer. He's the Happy Themer now (<a href="https://2014.badcamp.net/session/happy-themer-now-available-drupal-8">session</a>).
+          </li>
+        </ul>
+      </section>
 
-          <h3>#learnfrommyfail</h3>
-        </section>
+      <section>
+        <h2>D8 is more consistent</h2>
+        <ul>
+          <li class="fragment">Patterns are used pretty consistently in core</li>
+          <li class="fragment">Your IDE will happily help you understand</li>
+          <li class="fragment">You have to define more things, so it's easier to find where
+            things are defined
+          </li>
+          <li class="fragment">Some things still feel like magic, but it's magic the wider
+            Modern PHP community expects/understands I think
+          </li>
+        </ul>
+      </section>
 
-        <section>
-          <ul>
-            <li>The <s>cake</s> documentation page called <strong>"Converting
-              modules from 7.x to 8.x"</strong> is a lie. Don't bother with it.
-            </li>
-            <li class="fragment">Start with Drupal Module Upgrader (DMU) instead! It will tell
-              you a lot of what you need to fix.
-              <a href="https://drupal.org/project/drupalmoduleupgrader">https://drupal.org/project/drupalmoduleupgrader</a>
-            </li>
-            <li class="fragment">There will be other things besides what it says. For that, look
-              at the change records:
-              <a href="https://www.drupal.org/list-changes/published?keywords_description=&to_branch=8.x&version=&created_op=%3E%3D&created%5Bvalue%5D=&created%5Bmin%5D=&created%5Bmax%5D=">https://drupal.org/list-changes
-                (filtered by changes introduced in 8.x)</a>. These tend to be
-              pretty well-written.
-            </li>
-            <li class="fragment">Start with simple things like permissions. Move on to your
-              settings forms if there are any, then move on to more and more
-              complex stuff.
-              <br>
-              <small>(Coder Upgrade is discontinued, by the way, but regular Coder
-                is still around.)
-              </small>
-            </li>
-          </ul>
-        </section>
+    <section>
+      <h2>Verdict:</h2>
 
-        <section>
-          <h3>Biggest fails (stuff that confused me the most):</h3>
-          <ul>
-            <li class="fragment current-visible">Database bad, entities good
-            </li>
-            <li class="fragment current-visible">Many change records show stuff
-              like
-              <pre><code class="php" data-trim contenteditable>\Drupal::config('foo.bar')->get('baz')</code></pre>, but you should use dependency injection except in procedural
-              code (which should be rare)
-              <ul>
-                <li>For example, in form controllers, you can use
-                  <pre><code class="php" data-trim contenteditable>$this->config->get('foo.bar')->get('baz')</code></pre>
-                </li>
-                <li>But read the Configuration API docs first :)</li>
-              </ul>
-            </li>
-          </ul>
-        </section>
+      <h3>Learn it!</h3>
+    </section>
 
-        <section>
-          <h3>King Fail: Dependency Injection</h3>
+      <section>
+        <h2>Now let me save you some time</h2>
 
-          <p>What is this <em>doing</em>?</p><pre><code class="php" data-trim contenteditable>
+        <h3>#learnfrommyfail</h3>
+      </section>
+
+      <section>
+        <ul>
+          <li>The <s>cake</s> documentation page called <strong>"Converting
+            modules from 7.x to 8.x"</strong> is a lie. Don't bother with it.
+          </li>
+          <li class="fragment">Start with Drupal Module Upgrader (DMU) instead! It will tell
+            you a lot of what you need to fix.
+            <a href="https://drupal.org/project/drupalmoduleupgrader">https://drupal.org/project/drupalmoduleupgrader</a>
+          </li>
+          <li class="fragment">There will be other things besides what it says. For that, look
+            at the change records:
+            <a href="https://www.drupal.org/list-changes/published?keywords_description=&to_branch=8.x&version=&created_op=%3E%3D&created%5Bvalue%5D=&created%5Bmin%5D=&created%5Bmax%5D=">https://drupal.org/list-changes
+              (filtered by changes introduced in 8.x)</a>. These tend to be
+            pretty well-written.
+          </li>
+          <li class="fragment">Start with simple things like permissions. Move on to your
+            settings forms if there are any, then move on to more and more
+            complex stuff.
+            <br>
+            <small>(Coder Upgrade is discontinued, by the way, but regular Coder
+              is still around.)
+            </small>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Biggest fails (stuff that confused me the most):</h3>
+        <ul>
+          <li class="fragment current-visible">Database bad, entities good
+          </li>
+          <li class="fragment current-visible">Many change records show stuff
+            like
+            <pre><code class="php" data-trim contenteditable>\Drupal::config('foo.bar')->get('baz')</code></pre>, but you should use dependency injection except in procedural
+            code (which should be rare)
+            <ul>
+              <li>For example, in form controllers, you can use
+                <pre><code class="php" data-trim contenteditable>$this->config->get('foo.bar')->get('baz')</code></pre>
+              </li>
+              <li>But read the Configuration API docs first :)</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>King Fail: Dependency Injection</h3>
+
+        <p>What is this <em>doing</em>?</p><pre><code class="php" data-trim contenteditable>
 class HandlePdfController extends ControllerBase {
 
-  // ...
-  public function __construct(FillPdfLinkManipulatorInterface
-    $link_manipulator) {
-    $this->linkManipulator = $link_manipulator;
-  }
+// ...
+public function __construct(FillPdfLinkManipulatorInterface
+  $link_manipulator) {
+  $this->linkManipulator = $link_manipulator;
+}
 
-  public static function create(ContainerInterface $container) {
-    return new static($container->get('fillpdf.link_manipulator'));
-  }
-  // ...
+public static function create(ContainerInterface $container) {
+  return new static($container->get('fillpdf.link_manipulator'));
+}
+// ...
 
 }</code></pre>
 
-        </section>
-        <section>
-          <h3>King Fail: Dependency Injection</h3>
+      </section>
+      <section>
+        <h3>King Fail: Dependency Injection</h3>
 
-          <p>What is this <em>doing</em>?</p>
-          <img src="images/DependencyInjection.png">
-        </section>
-
+        <p>What is this <em>doing</em>?</p>
+        <img src="images/DependencyInjection.png">
       </section>
 
       <section>
