@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Modernizing FillPDF</title>
+  <title>Rewriting Contributed Modules for Drupal 8</title>
 
-  <meta name="description" content="FillPDF has gone modern; this presentation explains how.">
+  <meta name="description" content="Drupal has changed a lot in version 8. This presentation gives an overview of how to port a Drupal 7 module to the new platform.">
   <meta name="author" content="Kevin Kaland">
 
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="lib/css/zenburn.css">
 
   <!-- Our overrides -->
-  <link rel="stylesheet" href="lib/css/modern-fillpdf.css">
+  <link rel="stylesheet" href="lib/css/rewriting-modules-d8.css">
 
   <!-- If the query includes 'print-pdf', include the PDF print sheet -->
   <script>
@@ -46,24 +46,21 @@
     <!-- Any section element inside of this container is displayed as a slide -->
     <div class="slides">
 
-      <section data-background="images/future.jpg" data-state="mf-intro">
-        <h1>Modernizing<br><span style="font-size: 10%">the</span> FillPDF
-          <span style="font-size: 10%">Drupal module</span></h1>
+      <section data-background="images/ddd_background.jpg" data-state="mf-intro">
+        <h1>Rewriting Contributed Modules for Drupal 8</h1>
 
-        <h3>(By Porting it to Drupal 8)</h3>
-
-        <p>
-          Created by <a href="http://www.wizonesolutions">Kevin Kaland</a><br>
-          <small><a href="https://filldpf-service.com">FillPDF Service</a>
-          </small>
+        <p class="ddd-intro">
+          <a href="http://www.wizonesolutions">Kevin Kaland</a> - <a href="https://twitter.com/wizonesolutions">wizonesolutions</a>
         </p>
-        <p><span style="font-size: 50%">Presentation source: <a href="https://github.com/wizonesolutions/modernizing-fillpdf">https://github.com/wizonesolutions/modernizing-fillpdf</a></span></p>
+        <p><span class="subtitle--presentation-source">Presentation source: <a href="https://github.com/wizonesolutions/rewriting-modules-d8">https://github.com/wizonesolutions/rewriting-modules-d8</a></span></p>
       </section>
 
       <section>
-        <h2>What was my experience?</h2>
+        <h2>What's new in Drupal 8?</h2>
 
-        <p>(tl;dr: Not as bad as I expected.)</p>
+        <p>Everything.</p>
+
+        <p class="fragment fade-in">Yes, I'll tell you more.</p>
 
         <aside class="notes">
 
@@ -71,25 +68,21 @@
       </section>
 
       <section>
+        <h2>Learning curve</h2>
         <p>&lt;<em>insert learning curve image with people falling off that
           @mortendk uses all the time here</em>&gt;</p>
-
-        <p class="fragment">HOWEVER!</p>
       </section>
 
       <section>
-        <h2>"However" what?</h2>
+        <h2>Some D8 advice</h2>
         <ul>
           <li class="fragment">D8 isn't actually that scary.</li>
           <li class="fragment">It's the concepts you already know expressed in a different
             way.
           </li>
-          <li class="fragment">I spent most of my time re-organizing things into the new
-            structure, but I was able to re-use a lot of logic and sometimes
-            even code.
+          <li class="fragment">Most module-porting work is re-organizing the same code.
           </li>
-          <li class="fragment">The very same @mortendk was forced to retire as the Angry
-            Themer. He's the Happy Themer now (<a href="https://2014.badcamp.net/session/happy-themer-now-available-drupal-8">session</a>).
+          <li class="fragment">Drupal 8 made @mortendk the Happy Themer (<a href="https://2014.badcamp.net/session/happy-themer-now-available-drupal-8">session</a>).
           </li>
         </ul>
       </section>
@@ -100,19 +93,10 @@
           <li class="fragment">Patterns are used pretty consistently in core</li>
           <li class="fragment">Your IDE will happily help you understand</li>
           <li class="fragment">You have to define more things, so it's easier to find where
-            things are defined
-          </li>
-          <li class="fragment">Some things still feel like magic, but it's magic the wider
-            Modern PHP community expects/understands I think
-          </li>
+            things are defined</li>
+          <li class="fragment">Less magic, more Modern PHP patterns</li>
         </ul>
       </section>
-
-    <section>
-      <h2>Verdict:</h2>
-
-      <h3>Learn it!</h3>
-    </section>
 
       <section>
         <h2>Now let me save you some time</h2>
@@ -145,67 +129,255 @@
           </li>
         </ul>
       </section>
+      
+      <section>
+        <h2>Step 1: Make module work</h2>
+        <h3><i>fillpdf.info.yml</i></h3>
+<pre><code class="ini" data-trim>
+name: 'FillPDF'
+type: module
+description: 'Allows users to populate PDF forms from website data.'
+core: 8.x
+package: Other
+version: VERSION
+dependencies:
+  - file
+  - link
+  - token
+  - views
+</code></pre>
+      </section>
 
       <section>
-        <h3>Biggest fails (stuff that confused me the most):</h3>
+        <h2>The new APIs</h2>
+      </section>
+
+      <section>
+        <h3><s>hook_menu()</s> The routing system</h3>
+        <h4>fillpdf.routing.yml - Form example</h4>
+<pre><code class="ini" data-trim>
+# Form example
+fillpdf.settings:
+  path: '/admin/config/media/fillpdf'
+  defaults:
+    _form: '\Drupal\fillpdf\Form\FillPdfSettingsForm'
+    _title: 'FillPDF settings'
+  requirements:
+    _permission: 'administer pdfs'
+  options:
+    _admin_route: TRUE
+</code></pre>
+      </section>
+
+      <section>
+        <h4>fillpdf.routing.yml - Entity form example</h4>
+<pre><code class="ini" data-trim>
+entity.fillpdf_form.edit_form:
+  path: '/admin/structure/fillpdf/{fillpdf_form}'
+  defaults:
+    _entity_form: fillpdf_form.edit
+    _title: 'Edit FillPDF form'
+  requirements:
+    _permission: 'administer pdfs' # todo: do we have an administer own pdfs perm?
+  options:
+    _admin_route: TRUE
+</code></pre>
+      </section>
+
+      <section>
+        <h4>fillpdf.routing.yml - Controller example</h4>
+<pre><code class="ini" data-trim>
+fillpdf.populate_pdf:
+  path: '/fillpdf'
+  defaults:
+    _controller: '\Drupal\fillpdf\Controller\HandlePdfController::populatePdf'
+  requirements:
+    _custom_access: '\Drupal\fillpdf\FillPdfAccessController::checkLink'
+</code></pre>
+      </section>
+
+      <section>
+        <h3>FAPI</h3>
+        <p>Pretty much the same</p>
+        <p class="fragment"><code>buildForm()</code> method for non-entity forms</p>
+        <p class="fragment"><code>form()</code> for entity forms</p>
+        <p class="fragment">Return a good ol' render array</p>
+        <p class="fragment">Validation, submission similar</p>
+        <p class="fragment"><code>$form_state</code> is an object now!!!</p>
+      </section>
+
+      <section>
+        <h3><s>variable_set(), variable_get()</s> The Configuration API</h3>
+<pre><code class="php" data-trim>
+// In a ConfigFormBase form
+$config = $this->config('fillpdf.settings');
+$fillpdf_service = $config->get('fillpdf_service_backend');
+</code></pre>
+
+<pre class="fragment"><code class="php" data-trim>
+// Save form values.
+$this->config('fillpdf.settings')
+  ->set('fillpdf_service_backend', $form_state->getValue('fillpdf_service_backend'))
+  ->set('fillpdf_api_key', $form_state->getValue('fillpdf_api_key'))
+  ->set('fillpdf_remote_protocol', $form_state->getValue('fillpdf_remote_protocol'))
+  ->set('fillpdf_pdftk_path', $form_state->getValue('fillpdf_pdftk_path'))
+  ->save();
+</code></pre>
+      </section>
+
+      <section>
+        <h3><s>db_*</s> Entities!</h3>
+        <p>See <a href="http://fago.github.io/ddd-drupal-8-entity-api.js/#/">fago's awesome slide deck</a>.</p>
+        <p>It's good.</p>
+        <div class="fragment">
+          <p>tl;dr: <code>ContentEntityType</code> and <code>baseFieldDefinitions()</code></p>
+          <p>(or <code>ConfigEntityType)</code></p>
+        </div>
+      </section>
+
+      <section>
+        <h3><s>drupal_add_js(), drupal_add_css()</s> <code>.libraries.yml</code> and <code>#attached</code></h3>
+
+        <h4>fillpdf.libraries.yml</h4>
+<pre><code class="ini" data-trim>
+fillpdf.admin.settings:
+  version: VERSION
+  js:
+    fillpdf.js: {}
+  css:
+    component:
+      fillpdf.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+</code></pre>
+
+        <h4><code>FillPdfSettingsForm::buildForm()</code></h4>
+
+<pre><code class="php" data-trim>
+$form['#attached'] = array(
+  'library' => array('fillpdf/fillpdf.admin.settings')
+);
+</code></pre>
+      </section>
+
+      <section>
+        <h3>Dependency Injection</h3>
         <ul>
-          <li class="fragment current-visible">Database bad, entities good
-          </li>
-          <li class="fragment current-visible">Many change records show stuff
-            like
-            <pre><code class="php" data-trim contenteditable>\Drupal::config('foo.bar')->get('baz')</code></pre>, but you should use dependency injection except in procedural
-            code (which should be rare)
-            <ul>
-              <li>For example, in form controllers, you can use
-                <pre><code class="php" data-trim contenteditable>$this->config->get('foo.bar')->get('baz')</code></pre>
-              </li>
-              <li>But read the Configuration API docs first :)</li>
-            </ul>
-          </li>
+          <li>Makes your app testable</li>
+          <li class="fragment">Dependencies can be mocked during tests</li>
+          <li class="fragment">Easily lets your class get the context it needs without having to look it up itself</li>
         </ul>
       </section>
 
       <section>
-        <h3>King Fail: Dependency Injection</h3>
+        <h4>Secret tip!</h4>
+        <li>Many change records show stuff
+          like
+          <pre><code class="php" data-trim>\Drupal::config('foo.bar')->get('baz')</code></pre>, but you should use the injected versions except in procedural
+          code (which should be rare)
+          <ul>
+            <li>For example, in form controllers, you can use
+              <pre><code class="php" data-trim>$this->config->get('foo.bar')->get('baz')</code></pre>
+            </li>
+            <li>But read the Configuration API docs first :)</li>
+            <li class="fragment">(OK, it wasn't really that secret.)</li>
+          </ul>
+        </li>
+      </section>
 
-        <p>What is this <em>doing</em>?</p><pre><code class="php" data-trim contenteditable>
+      <section>
+      <p>So what's going on in this example?</p>
+<pre><code class="php" data-trim>
 class HandlePdfController extends ControllerBase {
 
-// ...
-public function __construct(FillPdfLinkManipulatorInterface
-  $link_manipulator) {
-  $this->linkManipulator = $link_manipulator;
-}
+  protected $linkManipulator;
 
-public static function create(ContainerInterface $container) {
-  return new static($container->get('fillpdf.link_manipulator'));
-}
-// ...
+  public function __construct(FillPdfLinkManipulatorInterface
+     $link_manipulator) {
+    $this->linkManipulator = $link_manipulator;
+  }
+
+  // ControllerBase implements \Drupal\Core\DependencyInjection\ContainerInjectionInterface,
+  // which provides the create method and makes this work.
+  public static function create(ContainerInterface $container) {
+    // factory method; returns instance of *this* class
+    return new static($container->get('fillpdf.link_manipulator'));
+  }
 
 }</code></pre>
-
-      </section>
-      <section>
-        <h3>King Fail: Dependency Injection</h3>
-
-        <p>What is this <em>doing</em>?</p>
-        <img src="images/DependencyInjection.png">
+        <p>This is also the pattern to inject classes you need when the
+          class you're extending does not already.</p>
       </section>
 
       <section>
-        <h2>Side effects of module porting</h2>
-        <img src="images/FirstCoreCommit.png">
+        <h3><s>mymodule_global_function()</s> Services</h3>
+        <ul>
+          <li>Provide application-wide functionality without destroying testability</li>
+          <li class="fragment">Defined in <code>services.yml</code></li>
+          <li class="fragment">Services are just normal classes; nothing special to do inside service</li>
+          <li class="fragment">Dependencies injected from the <code>services.yml</code> file</li>
+          <li class="fragment">Not everything has to be a service. Static utility functions can also do the job</li>
+        </ul>
+      </section>
 
-        <p>:)</p>
+      <section>
+        <h4>fillpdf.services.yml</h4>
+<pre><code class="ini" data-trim>
+  services:
+  plugin.manager.fillpdf_backend:
+  class: Drupal\fillpdf\FillPdfBackendManager
+  parent: default_plugin_manager
+
+  fillpdf.link_manipulator:
+  class: Drupal\fillpdf\Service\FillPdfLinkManipulator
+
+  fillpdf.admin_form_helper:
+  class: Drupal\fillpdf\Service\FillpdfAdminFormHelper
+  arguments: ['@module_handler']
+</code></pre>
+      </section>
+
+      <section>
+        <h3><s>Administrative FAPI tables</s> Views in core!</h3>
+        <h4>FillPdfFormViewsData.php</h4>
+<pre><code class="php" data-trim>
+class FillPdfFormViewsData extends EntityViewsData {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getViewsData() {
+    $data = parent::getViewsData();
+
+    $data['fillpdf_forms']['table']['group'] = $data['fillpdf_forms']['table']['base']['title'] = t('FillPDF forms');
+
+    $data['fillpdf_forms']['table']['base']['help'] = t('FillPDF forms are uploaded on the FillPDF administration page and are used by the FillPDF module.');
+
+    return $data;
+  }
+
+}
+</code></pre>
+      </section>
+
+      <section>
+        <h3>Views in core!</h3>
+        <ul>
+          <li>Then export the View in <code>/admin/config/development/configuration</code></li>
+          <li>Pick Single Import/Export, Export, configuration type: View, configuration name: The name of the View you created</li>
+          <li>It tells you a filename. Place that in <code>config/install</code> the same way you would regular configuration</li>
+        </ul>
       </section>
 
       <section>
         <h2>In summary</h2>
         <ul>
-          <li class="fragment">Drupal 8 is not that scary</li>
+          <li>Drupal 8 is not that scary</li>
           <li class="fragment">Drupal is competitive again</li>
-          <li class="fragment">It's early enough that you can bug the smart people in #drupal-contribute with your questions :)</li>
-          <li class="fragment">Backdrop is...okay, but it won't be my choice</li>
+          <li class="fragment">If you can't find docs, ask on Drupal Answers (preferred) or in #drupal-contribute on Freenode IRC</li>
+          <li class="fragment">Backdrop is not the future</li>
+          <li class="fragment">Message from @kvantomme: D8 module upgrade progress tailored to your site at <a href="http://d8upgrade.org">d8upgrade.org</a></li>
         </ul>
       </section>
 
@@ -219,8 +391,14 @@ public static function create(ContainerInterface $container) {
 
       <section>
         <h2>Reference material</h2>
-        <p><a href="https://github.com/wizonesolutions/fillpdf">FillPDF GitHub repository</a></p>
-        <p><a href="https://www.evernote.com/l/AALi3rgJxvpLhaNB0AKhU-uVKVVuZc3kQVo">Reading material (pretty much everything I read)</a></p>
+        <p><a href="https://www.drupal.org/list-changes/published?keywords_description=&to_branch=8.x&version=&created_op=%3E%3D&created%5Bvalue%5D=&created%5Bmin%5D=&created%5Bmax%5D=">Change records for Drupal 8</a></p>
+        <p><a href="https://drupal.org/project/fillpdf">FillPDF homepage (see <code>8.x-4.x</code> Git branch)</a></p>
+        <p><a href="https://www.evernote.com/l/AAKmGFgGaUBCi5qB8rBodU0_YHQF1Nt1k-M">My notes and links (pretty much everything I read)</a></p>
+      </section>
+
+      <section>
+        <h2>MERCI !</h2>
+        <p>Veuillez faîtes semblance que cette ligne contient une bonne blague pour que nous puissons tromper les étrangers.</p>
       </section>
 
     </div>

@@ -1,0 +1,37 @@
+.mf-intro section, .mf-intro section h1, .mf-intro section h3, .mf-intro section p {
+  color: #eee;
+}
+
+.mf-intro section h1 {
+  font-size: 1.75em;
+  padding-bottom: 1.5em;
+}
+
+.mf-intro section a:not(.image) {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.mf-intro section a:not(.image):hover, .mf-intro section a:not(.image):active {
+  color: #ccc;
+}
+
+.mf-intro .subtitle--presentation-source {
+  /*background-color: #262627;*/
+  font-size: 50%;
+  padding: 10px;
+}
+
+.mf-intro .subtitle--presentation-source a:hover, .mf-intro .subtitle--presentation-source a:active {
+  color: #ccc;
+}
+
+p.ddd-intro:before {
+  content: "";
+  width: 65px;
+  height: 8px;
+  background: #C21426;
+  position: absolute;
+  top: 50%;
+  left: 47%;
+}
